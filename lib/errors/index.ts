@@ -1,0 +1,1 @@
+export { PassportError } from './PassportError'

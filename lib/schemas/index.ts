@@ -1,0 +1,1 @@
+export { passportsConfig } from './passportsConfig'
