@@ -22,7 +22,7 @@ const spools = [
 ]
 
 const ORM = process.env.ORM || 'sequelize'
-const DIALECT = process.env.DIALECT || 'sqlite'
+const DIALECT = process.env.DIALECT || 'postgres'
 
 const stores = {
   sqlitedev: {
@@ -33,7 +33,7 @@ const stores = {
 if (DIALECT === 'postgres') {
   stores.sqlitedev = {
     orm: 'sequelize',
-    database: 'passport',
+    database: 'Sequelize',
     host: '127.0.0.1',
     dialect: 'postgres'
   }
@@ -78,6 +78,14 @@ const App = {
       profile: 'testProfile'
     },
     passport: {
+      redirect: {
+        // Login successful
+        login: '/',
+        // Logout successful
+        logout: '/',
+        // Recover successful
+        recover: '/'
+      },
       onUserLogin: {
         test: (req, app, user) => {
           if (user.passports) {
@@ -174,9 +182,6 @@ const App = {
     policies: {
       DefaultController: ['Passport.jwt'],
       TestBasicController: ['Passport.basicAuth'],
-    },
-    log: {
-      logger: new smokesignals.Logger('debug')
     },
     session: {
       secret: 'ok'

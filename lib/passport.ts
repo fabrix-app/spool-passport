@@ -207,14 +207,14 @@ export const Passport = {
     )
   },
   addRoutes: app => {
-    const prefix = app.config.get('passport.prefix') || app.config.get('tapestries.prefix')
-    const routerUtil = app.spools.router.util
-    if (prefix) {
-      routes.forEach(route => {
-        route.path = prefix + route.path
-      })
-    }
-    app.config.routes = routerUtil.mergeRoutes(routes, app.config.get('routes'))
+    // const prefix = app.config.get('passport.prefix') || app.config.get('tapestries.prefix')
+    // const routerUtil = app.spools.router.util
+    // if (prefix) {
+    //   routes.forEach(route => {
+    //     route.path = prefix + route.path
+    //   })
+    // }
+    // app.config.routes = routerUtil.mergeRoutes(routes, app.config.get('routes'))
 
     return Promise.resolve({})
   },

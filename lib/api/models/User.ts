@@ -1,14 +1,84 @@
 import { FabrixModel as Model } from '@fabrix/fabrix/dist/common'
+import { SequelizeResolver } from '@fabrix/spool-sequelize'
+
 import { UserDefaults } from '../utils/queryDefaults/UserDefaults'
 import * as shortId from 'shortid'
 
-const _ = require('lodash')
+import { isObject, isNumber, isString, defaultsDeep } from 'lodash'
 
 export interface User {
   getSalutation(options): any
   generateRecovery(val): any
   sendResetEmail(options): any
   resolvePassports(options): any
+}
+
+export class UserResolver extends SequelizeResolver {
+
+  findByIdDefault(criteria, options = {}) {
+    options = defaultsDeep(options, UserDefaults.default(this.app))
+    return this.findById(criteria, options)
+  }
+
+  findOneDefault(options = {}) {
+    options = defaultsDeep(options, UserDefaults.default(this.app))
+    return this.findOne(options)
+  }
+
+  resolve(user, options) {
+    options = options || {}
+    const UserModel = this.sequelizeModel
+    if (user instanceof UserModel) {
+      return Promise.resolve(user)
+    }
+    else if (user && isObject(user) && user.id) {
+      return UserModel.findById(user.id, options)
+        .then(resUser => {
+          if (!resUser) {
+            throw Error(`User ${user.id} not found`)
+          }
+          return resUser
+        })
+    }
+    else if (user && isObject(user) && user.email) {
+      return UserModel.findOne(defaultsDeep({
+        where: {
+          email: user.email
+        }
+      }, options))
+        .then(resUser => {
+          if (!resUser) {
+            throw new Error(`User ${user.email} not found`)
+          }
+          return resUser
+        })
+    }
+    else if (user && isNumber(user)) {
+      return UserModel.findById(user, options)
+        .then(resUser => {
+          if (!resUser) {
+            throw new Error(`User ${user} not found`)
+          }
+          return resUser
+        })
+    }
+    else if (user && isString(user)) {
+      return UserModel.findOne(defaultsDeep({
+        where: {
+          email: user
+        }
+      }, options))
+        .then(resUser => {
+          if (!resUser) {
+            throw new Error(`User ${user} not found`)
+          }
+          return resUser
+        })
+    }
+    else {
+      throw new Error(`User ${user} not found`)
+    }
+  }
 }
 
 /**
@@ -66,6 +136,10 @@ export class User extends Model {
     }
   }
 
+  public static get resolver () {
+    return UserResolver
+  }
+
   // If you need associations, put them here
   // More information about associations here: http://docs.sequelizejs.com/en/latest/docs/associations/
   associate(models) {
@@ -76,72 +150,6 @@ export class User extends Model {
         allowNull: false
       }
     })
-  }
-
-  findByIdDefault(criteria, options = {}) {
-    options = _.defaultsDeep(options, UserDefaults.default(this.app))
-    return this.findById(criteria, options)
-  }
-
-  findOneDefault(options = {}) {
-
-    options = _.defaultsDeep(options, UserDefaults.default(this.app))
-    return this.findOne(options)
-  }
-
-  resolve(user, options) {
-    options = options || {}
-    const UserModel = this
-    if (user instanceof UserModel) {
-      return Promise.resolve(user)
-    }
-    else if (user && _.isObject(user) && user.id) {
-      return UserModel.findById(user.id, options)
-        .then(resUser => {
-          if (!resUser) {
-            throw Error(`User ${user.id} not found`)
-          }
-          return resUser
-        })
-    }
-    else if (user && _.isObject(user) && user.email) {
-      return UserModel.findOne(_.defaultsDeep({
-        where: {
-          email: user.email
-        }
-      }, options))
-        .then(resUser => {
-          if (!resUser) {
-            throw new Error(`User ${user.email} not found`)
-          }
-          return resUser
-        })
-    }
-    else if (user && _.isNumber(user)) {
-      return UserModel.findById(user, options)
-        .then(resUser => {
-          if (!resUser) {
-            throw new Error(`User ${user} not found`)
-          }
-          return resUser
-        })
-    }
-    else if (user && _.isString(user)) {
-      return UserModel.findOne(_.defaultsDeep({
-        where: {
-          email: user
-        }
-      }, options))
-        .then(resUser => {
-          if (!resUser) {
-            throw new Error(`User ${user} not found`)
-          }
-          return resUser
-        })
-    }
-    else {
-      throw new Error(`User ${user} not found`)
-    }
   }
 }
 

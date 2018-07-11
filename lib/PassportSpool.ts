@@ -4,7 +4,7 @@ import { Passport } from './passport'
 
 import * as config from './config/index'
 import * as pkg from '../package.json'
-import * as api  from './api/index'
+import * as api from './api/index'
 
 export class PassportSpool extends Spool {
 
@@ -31,12 +31,16 @@ export class PassportSpool extends Spool {
       return Promise.reject(new Error('No configuration found at config.passport!'))
     }
 
+    if (!this.app.config.get('web.middlewares.order').some(a => a === 'passportInit')) {
+      return Promise.reject(new Error('passportInit middleware missing in web.middlewares!'))
+    }
+
     const strategies = this.app.config.get('passport.strategies')
     if (!strategies || (strategies && Object.keys(strategies).length === 0)) {
       return Promise.reject(new Error('No strategies found at config.passport.strategies!'))
     }
 
-    if (strategies.jwt && this.app.get('config.passport.jwt.tokenOptions.secret') === 'mysupersecuretoken') {
+    if (strategies.jwt && this.app.config.get('passport.jwt.tokenOptions.secret') === 'mysupersecuretoken') {
       return Promise.reject(new Error('You need to change the default token!'))
     }
 

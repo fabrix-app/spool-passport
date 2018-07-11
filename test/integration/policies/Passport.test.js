@@ -13,6 +13,7 @@ describe('PassportPolicy', () => {
   })
   it('should exist', () => {
     assert(global.app.api.policies['Passport'])
+    assert(global.app.policies['Passport'])
   })
 
   it('should test basic auth', (done) => {
@@ -20,7 +21,8 @@ describe('PassportPolicy', () => {
       .set('Authorization', 'Basic admin:admin1234')
       .expect(200)
       .end((err, res) => {
-        done()
+        console.log(err, res.body)
+        done(err)
       })
   })
 })

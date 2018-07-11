@@ -1,4 +1,6 @@
 import { FabrixModel as Model } from '@fabrix/fabrix/dist/common'
+import { SequelizeResolver } from '@fabrix/spool-sequelize'
+
 /**
  * @module Passport
  * @description Passport model
@@ -81,6 +83,10 @@ export class Passport extends Model {
         allowNull: true
       }
     }
+  }
+
+  public static get resolver () {
+    return SequelizeResolver
   }
 
   // If you need associations, put them here

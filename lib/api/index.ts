@@ -10,12 +10,12 @@ import * as templates from './templates/index'
 
 export {
   controllers,
-  crons,
+  // crons,
   emails,
   events,
-  generics,
+  // generics,
   models,
   policies,
   services,
-  templates
+  // templates
 }

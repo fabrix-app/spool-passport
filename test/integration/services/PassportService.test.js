@@ -9,7 +9,7 @@ describe('PassportService', () => {
   before((done) => {
     request = supertest('http://localhost:3000')
     agent = supertest.agent(global.app.spools.express.server)
-
+    console.log('BROKE', global.app.routes)
     request
       .post('/auth/local/register')
       .set('Accept', 'application/json') //set header for this test
@@ -20,6 +20,7 @@ describe('PassportService', () => {
       })
       .expect(200)
       .end((err, res) => {
+        console.log('BROKE', res.body)
         assert.equal(res.body.redirect, '/')
         assert.notEqual(res.body.user.id, null)
         // assert.ok(res.body.user.onUserLogin)
@@ -27,6 +28,7 @@ describe('PassportService', () => {
         token = res.body.token
         done(err)
       })
+    // done()
   })
   it('should exist', () => {
     assert(global.app.api.services['PassportService'])
