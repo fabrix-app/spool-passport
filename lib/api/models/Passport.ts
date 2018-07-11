@@ -91,7 +91,7 @@ export class Passport extends Model {
 
   // If you need associations, put them here
   // More information about associations here: http://docs.sequelizejs.com/en/latest/docs/associations/
-  associate(models) {
+  public static associate(models) {
     models.Passport.belongsTo(models.User, {
       //
       foreignKey: 'user_id'
@@ -134,7 +134,7 @@ Passport.prototype.validatePassword = function(password) {
 Passport.prototype.resolveUser = function(options: {reload?: boolean, transaction?: any} = {}) {
   if (
     this.User
-    && this.User instanceof this.app.models['User']
+    && this.User instanceof this.app.models['User'].sequelizeModel
     && options.reload !== true
   ) {
     return Promise.resolve(this)

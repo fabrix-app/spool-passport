@@ -201,12 +201,12 @@ Now you can apply some policies to control sessions under `config/policies.ts`
   }
   or 
   ViewController: {
-      helloWorld: [ 'Passport.jwt' ]
-    }
+    helloWorld: [ 'Passport.jwt' ]
+  }
 ```
 
 ### Routes prefix
-By default auth routes doesn't have prefix, but if you use `spool-tapestries` it automatically use tapestries prefix to match your API. You can change this prefix by setting `config.passport.prefix`.
+By default auth routes doesn't have prefix, but if you use `spool-tapestries` it automatically use tapestries prefix to match your API. You can change this prefix by setting `config.router.prefix`.
 
 ### Log/Register users with third party providers
 You can register or log users with third party strategies by redirect the user to : 

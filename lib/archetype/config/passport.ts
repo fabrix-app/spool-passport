@@ -1,5 +1,3 @@
-'use strict'
-
 /*
 //Basic configuration for JWT
 const JwtStrategy = require('passport-jwt').Strategy

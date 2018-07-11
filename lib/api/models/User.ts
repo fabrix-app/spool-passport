@@ -25,14 +25,13 @@ export class UserResolver extends SequelizeResolver {
     return this.findOne(options)
   }
 
-  resolve(user, options) {
+  resolve(user, options = {}) {
     options = options || {}
-    const UserModel = this.sequelizeModel
-    if (user instanceof UserModel) {
+    if (user instanceof this.sequelizeModel) {
       return Promise.resolve(user)
     }
     else if (user && isObject(user) && user.id) {
-      return UserModel.findById(user.id, options)
+      return this.findById(user.id, options)
         .then(resUser => {
           if (!resUser) {
             throw Error(`User ${user.id} not found`)
@@ -41,7 +40,7 @@ export class UserResolver extends SequelizeResolver {
         })
     }
     else if (user && isObject(user) && user.email) {
-      return UserModel.findOne(defaultsDeep({
+      return this.findOne(defaultsDeep({
         where: {
           email: user.email
         }
@@ -54,7 +53,7 @@ export class UserResolver extends SequelizeResolver {
         })
     }
     else if (user && isNumber(user)) {
-      return UserModel.findById(user, options)
+      return this.findById(user, options)
         .then(resUser => {
           if (!resUser) {
             throw new Error(`User ${user} not found`)
@@ -63,7 +62,7 @@ export class UserResolver extends SequelizeResolver {
         })
     }
     else if (user && isString(user)) {
-      return UserModel.findOne(defaultsDeep({
+      return this.findOne(defaultsDeep({
         where: {
           email: user
         }
@@ -142,7 +141,7 @@ export class User extends Model {
 
   // If you need associations, put them here
   // More information about associations here: http://docs.sequelizejs.com/en/latest/docs/associations/
-  associate(models) {
+  public static associate(models) {
     models.User.hasMany(models.Passport, {
       as: 'passports',
       onDelete: 'CASCADE',
@@ -222,7 +221,7 @@ User.prototype.resolvePassports = function(options: any = {}) {
 
   if (
     this.passports
-    && this.passports.every(t => t instanceof this.app.models.Passport)
+    && this.passports.every(t => t instanceof this.app.models.Passport.sequelizeModel)
     && options.reload !== true
   ) {
     return Promise.resolve(this)

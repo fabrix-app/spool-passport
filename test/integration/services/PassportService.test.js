@@ -20,7 +20,7 @@ describe('PassportService', () => {
       })
       .expect(200)
       .end((err, res) => {
-        console.log('BROKE', res.body)
+        console.log('BROKE', err, res.body)
         assert.equal(res.body.redirect, '/')
         assert.notEqual(res.body.user.id, null)
         // assert.ok(res.body.user.onUserLogin)

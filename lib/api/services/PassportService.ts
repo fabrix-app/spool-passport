@@ -12,8 +12,8 @@ const _ = require('lodash')
  * @description Main passport service
  */
 export class PassportService extends Service {
-  protocols
-  passport
+  public protocols
+  public passport
 
   constructor(app) {
     super(app)

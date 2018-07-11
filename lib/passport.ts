@@ -1,8 +1,6 @@
 import { FabrixApp } from '@fabrix/fabrix'
-
-const url = require('url')
-const _ = require('lodash')
-const routes = require('./routes')
+import * as url from 'url'
+import { each, extend, clone } from 'lodash'
 
 export const Passport = {
   init: (app: FabrixApp) => {
@@ -165,9 +163,9 @@ export const Passport = {
 
   loadStrategies: (app: FabrixApp) => {
     const passport = app.services.PassportService.passport
-    _.each(app.config.get('passport.strategies'), (strategiesOptions, name) => {
+    each(app.config.get('passport.strategies'), (strategiesOptions, name) => {
       const Strategy = strategiesOptions.strategy
-      const options = _.extend({passReqToCallback: true}, strategiesOptions.options || {})
+      const options = extend({passReqToCallback: true}, strategiesOptions.options || {})
       if (name === 'local') {
         passport.use(new Strategy(options, app.services.PassportService.protocols.local(app)))
       }
@@ -199,14 +197,14 @@ export const Passport = {
           // Merge the default options with any options defined in the config. All
           // defaults can be overriden, but I don't see a reason why you'd want to
           // do that.
-        _.extend(options, strategiesOptions.options)
+        extend(options, strategiesOptions.options)
 
         passport.use(new Strategy(options, app.services.PassportService.protocols[protocol](app)))
       }
     }
     )
   },
-  addRoutes: app => {
+  addRoutes: (app: FabrixApp) => {
     // const prefix = app.config.get('passport.prefix') || app.config.get('tapestries.prefix')
     // const routerUtil = app.spools.router.util
     // if (prefix) {
@@ -223,8 +221,8 @@ export const Passport = {
    * @param app
    * @returns {Promise.<{}>}
    */
-  copyDefaults: (app) => {
-    app.config.set('passportDefaults', _.clone(app.config.get('passport')))
+  copyDefaults: (app: FabrixApp) => {
+    app.config.set('passportDefaults', clone(app.config.get('passport')))
     return Promise.resolve({})
   }
 }

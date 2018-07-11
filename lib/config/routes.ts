@@ -2,12 +2,20 @@ export const routes = [
   {
     method: ['POST'],
     path: '/auth/local',
-    handler: 'AuthController.callback'
+    handler: 'AuthController.callback',
+    config: {
+      app: {
+      }
+    }
   },
   {
     method: ['POST'],
     path: '/auth/local/{action}',
-    handler: 'AuthController.callback'
+    handler: 'AuthController.callback',
+    config: {
+      app: {
+      }
+    }
   },
   {
     method: ['GET'],
@@ -25,19 +33,11 @@ export const routes = [
       app: {
       }
     }
-  }, {
+  },
+  {
     method: ['GET'],
     path: '/auth/{provider}/{action}',
     handler: 'AuthController.callback',
-    config: {
-      app: {
-      }
-    }
-  },
-  {
-    method: ['GET'],
-    path: '/auth/{provider}',
-    handler: 'AuthController.provider',
     config: {
       app: {
       }
@@ -66,4 +66,13 @@ export const routes = [
       }
     }
   },
+  {
+    method: ['GET'],
+    path: '/auth/{provider}',
+    handler: 'AuthController.provider',
+    config: {
+      app: {
+      }
+    }
+  }
 ]

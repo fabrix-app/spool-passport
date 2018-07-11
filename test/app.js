@@ -21,33 +21,6 @@ const spools = [
   require('../dist').PassportSpool // spool-passport
 ]
 
-const ORM = process.env.ORM || 'sequelize'
-const DIALECT = process.env.DIALECT || 'postgres'
-
-const stores = {
-  sqlitedev: {
-    adapter: require('sails-disk')
-  }
-}
-
-if (DIALECT === 'postgres') {
-  stores.sqlitedev = {
-    orm: 'sequelize',
-    database: 'Sequelize',
-    host: '127.0.0.1',
-    dialect: 'postgres'
-  }
-}
-else {
-  stores.sqlitedev = {
-    orm: 'sequelize',
-    database: 'passport',
-    storage: './test/test.sqlite',
-    host: '127.0.0.1',
-    dialect: 'sqlite'
-  }
-}
-
 const App = {
   pkg: {
     name: 'passport-spool-test',
@@ -68,9 +41,17 @@ const App = {
     }
   },
   config: {
-    stores: stores,
+    stores: {
+      sequelize: {
+        migrate: 'drop',
+        orm: 'sequelize',
+        database: 'Sequelize',
+        host: '127.0.0.1',
+        dialect: 'postgres'
+      }
+    },
     models: {
-      defaultStore: 'sqlitedev',
+      defaultStore: 'sequelize',
       migrate: 'drop'
     },
     engine: {
