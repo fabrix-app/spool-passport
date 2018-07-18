@@ -51,7 +51,7 @@
     "bcryptjs": "2.4.3",
     "joi": "^13.4.0",
     "jsonwebtoken": "7.3.0",
-    "lodash": "^4.17.3",
+    "lodash": "^4.17.10",
     "passport": "^0.4.0",
     "shortid": "^2.2.8"
   },
