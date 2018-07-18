@@ -29,8 +29,7 @@ export const spool = {
        * method is invoked on this Spool
        */
       listen: [
-        'spool:sequelize:configured',
-        // 'spool:engine:configured'
+        'spool:sequelize:configured'
       ],
 
       /**
@@ -42,8 +41,7 @@ export const spool = {
     },
     initialize: {
       listen: [
-        'spool:sequelize:initialized',
-        // 'spool:engine:initialized'
+        'spool:sequelize:initialized'
       ],
       emit: [
         'spool:passport:initialized'

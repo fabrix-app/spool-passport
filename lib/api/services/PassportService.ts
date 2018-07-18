@@ -25,9 +25,7 @@ export class PassportService extends Service {
     if (this.app.services.EngineService) {
       return this.app.services.EngineService.publish(type, event, options)
     }
-    else {
-      this.app.log.debug('Spool-engine is not installed, please install it to use publish')
-    }
+    this.app.log.debug('Spool-engine is not installed, please install it to use publish')
     return Promise.resolve()
   }
 
@@ -192,7 +190,7 @@ export class PassportService extends Service {
         return User.create(userInfos, {
           include: [
             {
-              model: Passport,
+              model: Passport.resolver.sequelizeModel,
               as: 'passports'
             }
           ],
@@ -212,7 +210,7 @@ export class PassportService extends Service {
             user: resUser.id
           }],
           type: 'user.registered',
-          message: `User ${resUser.getSalutation()} registered`,
+          message: `User ${resUser.getSalutation(this.app)} registered`,
           data: resUser
         }
         return this.publish(event.type, event, {
@@ -260,20 +258,20 @@ export class PassportService extends Service {
   updateLocalPassword(user, password, options: {save?: boolean, transaction?: any} = {}) {
     const User = this.app.models['User']
 
-    let resUser
+    let resUser, localPassport
     return User.resolve(user, {transaction: options.transaction || null})
       .then(_user => {
         if (!_user) {
           throw new Error('E_USER_NOT_FOUND')
         }
         resUser = _user
-        return resUser.resolvePassports({transaction: options.transaction || null})
+        return resUser.resolvePassports(this.app, {transaction: options.transaction || null})
       })
       .then(() => {
         if (!resUser.passports || resUser.passports.length === 0) {
           throw new Error('E_NO_AVAILABLE_PASSPORTS')
         }
-        const localPassport = resUser.passports.find(passportObj => passportObj.protocol === 'local')
+        localPassport = resUser.passports.find(passportObj => passportObj.protocol === 'local')
         if (!localPassport) {
           throw new Error('E_NO_AVAILABLE_LOCAL_PASSPORT')
         }
@@ -287,11 +285,12 @@ export class PassportService extends Service {
             passport: localPassport.id
           }],
           type: 'user.password.updated',
-          message: `User ${resUser.getSalutation()} password updated`,
+          message: `User ${resUser.getSalutation(this.app)} password updated`,
           data: resUser
         }
-        this.publish(event.type, event, {save: true})
-
+        return this.publish(event.type, event, {save: true})
+      })
+      .then(() => {
         localPassport.password = password
         return localPassport.save({transaction: options.transaction || null})
       })
@@ -338,7 +337,7 @@ export class PassportService extends Service {
           }, {
             include: [
               {
-                model: UserModel,
+                model: UserModel.resolver.sequelizeModel,
                 required: true
               }
             ],
@@ -406,7 +405,7 @@ export class PassportService extends Service {
         }
         reqUser = _user
 
-        return reqUser.resolvePassports()
+        return reqUser.resolvePassports(this.app)
       })
       .then(() => {
 
@@ -416,7 +415,7 @@ export class PassportService extends Service {
           throw new Error('E_USER_NO_PASSWORD')
         }
 
-        return passportInstance.validatePassword(password)
+        return passportInstance.validatePassword(this.app, password)
           .catch(err => {
             throw new Error('E_WRONG_PASSWORD')
           })
@@ -440,10 +439,10 @@ export class PassportService extends Service {
         })
       })
       .then(event => {
-        if (typeof onUserLogin === 'function') {
+        if (onUserLogin instanceof Object && typeof onUserLogin === 'function') {
           return onUserLogin(req, this.app, reqUser)
         }
-        else if (typeof onUserLogin === 'object') {
+        else if (onUserLogin instanceof Object) {
           const promises = []
 
           Object.keys(onUserLogin).forEach(func => {
@@ -474,7 +473,8 @@ export class PassportService extends Service {
    */
   logout(req, user) {
     const onUserLogout = this.app.config.get('config.passport.onUserLogout')
-    if (typeof onUserLogout === 'object') {
+
+    if (onUserLogout instanceof Object && typeof onUserLogout !== 'function') {
       const promises = []
       Object.keys(onUserLogout).forEach(func => {
         promises.push(onUserLogout[func])
@@ -493,8 +493,11 @@ export class PassportService extends Service {
           return Promise.reject(err)
         })
     }
-    else {
+    else if (onUserLogout instanceof Object && typeof onUserLogout === 'function') {
       return Promise.resolve(onUserLogout(req, this.app))
+    }
+    else {
+      return Promise.resolve(user)
     }
   }
 
@@ -544,7 +547,7 @@ export class PassportService extends Service {
           throw new Error('E_USER_NOT_FOUND')
         }
         resUser = _user
-        return resUser.resolvePassports({transaction: options.transaction || null})
+        return resUser.resolvePassports(this.app, {transaction: options.transaction || null})
       })
       .then(() => {
         if (!resUser.passports || resUser.passports.length === 0) {
@@ -557,7 +560,7 @@ export class PassportService extends Service {
           throw new Error('E_NO_AVAILABLE_LOCAL_PASSPORT')
         }
 
-        return resUser.generateRecovery(body[fieldName].toLowerCase())
+        return resUser.generateRecovery(this.app, body[fieldName].toLowerCase())
           .catch(err => {
             throw new Error('E_VALIDATION_HASH')
           })
@@ -577,7 +580,7 @@ export class PassportService extends Service {
             passport: localPassport.id
           }],
           type: 'user.password.recover',
-          message: `User ${resUser.getSalutation()} requested to recover password`,
+          message: `User ${resUser.getSalutation(this.app)} requested to recover password`,
           data: resUser
         }
         return this.publish(event.type, event, {
@@ -600,11 +603,9 @@ export class PassportService extends Service {
    * @param options
    * @returns {*}
    */
-  onRecover(req, user, options) {
-    options = options || {}
-    // console.log('THIS RECOVER onRecover', user)
+  onRecover(req, user, options = {}) {
     const onUserRecover = this.app.config.get('passport.onUserRecover')
-    if (typeof onUserRecover === 'object') {
+    if (onUserRecover instanceof Object && typeof onUserRecover !== 'function') {
       const promises = []
       Object.keys(onUserRecover).forEach(func => {
         promises.push(onUserRecover[func])
@@ -623,8 +624,11 @@ export class PassportService extends Service {
           return Promise.reject(err)
         })
     }
-    else {
+    else if (onUserRecover instanceof Object && typeof onUserRecover === 'function') {
       return Promise.resolve(onUserRecover(req, this.app, user))
+    }
+    else {
+      return Promise.resolve(user)
     }
   }
 
@@ -701,7 +705,7 @@ export class PassportService extends Service {
             passport: passportInstance.id
           }],
           type: 'user.password.reset',
-          message: `User ${resUser.getSalutation()} password was reset`,
+          message: `User ${resUser.getSalutation(this.app)} password was reset`,
           data: passportInstance
         }
         return this.publish(event.type, event, {
@@ -764,7 +768,7 @@ export class PassportService extends Service {
             passport: passportInstance.id
           }],
           type: 'user.password.reset',
-          message: `User ${ resUser.getSalutation() } password was reset`,
+          message: `User ${ resUser.getSalutation(this.app) } password was reset`,
           data: passportInstance
         }
         return this.publish(event.type, event, {

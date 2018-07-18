@@ -26,13 +26,22 @@ export class PassportSpool extends Spool {
     if (!spools.some(v => requiredSpools.indexOf(v) >= 0)) {
       return Promise.reject(new Error(`spool-passport requires spools: ${ requiredSpools.join(', ') }!`))
     }
+    if (!spools.some(v => v === 'engine')) {
+      this.app.log.warn('spool-engine not installed, pubSub is disabled')
+    }
+    if (!spools.some(v => v === 'notifications')) {
+      this.app.log.warn('spool-notifications not installed, notifications are disabled')
+    }
+    if (!spools.some(v => v === 'email')) {
+      this.app.log.warn('spool-email not installed, emails are disabled')
+    }
 
     if (!this.app.config.get('passport')) {
       return Promise.reject(new Error('No configuration found at config.passport!'))
     }
 
     if (!this.app.config.get('web.middlewares.order').some(a => a === 'passportInit')) {
-      return Promise.reject(new Error('passportInit middleware missing in web.middlewares!'))
+      return Promise.reject(new Error('passportInit middleware missing in web.middlewares.order!'))
     }
 
     const strategies = this.app.config.get('passport.strategies')
@@ -56,7 +65,24 @@ export class PassportSpool extends Spool {
     Passport.init(this.app)
     Passport.loadStrategies(this.app)
     Passport.copyDefaults(this.app)
-    Passport.addRoutes(this.app)
   }
+
+  sanity() {
+    if (
+      !this.app.config.get('web.middlewares.passportInit')
+      || !this.app.config.get('web.middlewares').passportInit
+      || !this.app.config.get('web').middlewares.passportInit
+    ) {
+      throw new Error('passportInit middleware missing in web.middlewares!')
+    }
+    if (
+      !this.app.config.get('web.middlewares.passportSession')
+      || !this.app.config.get('web.middlewares').passportSession
+      || !this.app.config.get('web').middlewares.passportSession
+    ) {
+      throw new Error('passportSession middleware missing in web.middlewares!')
+    }
+  }
+
 }
 

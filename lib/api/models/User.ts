@@ -1,3 +1,4 @@
+import { FabrixApp } from '@fabrix/fabrix'
 import { FabrixModel as Model } from '@fabrix/fabrix/dist/common'
 import { SequelizeResolver } from '@fabrix/spool-sequelize'
 
@@ -7,10 +8,10 @@ import * as shortId from 'shortid'
 import { isObject, isNumber, isString, defaultsDeep } from 'lodash'
 
 export interface User {
-  getSalutation(options): any
-  generateRecovery(val): any
-  sendResetEmail(options): any
-  resolvePassports(options): any
+  getSalutation(app: FabrixApp, options): any
+  generateRecovery(app: FabrixApp, val): any
+  sendResetEmail(app: FabrixApp, options): any
+  resolvePassports(app: FabrixApp, options): any
 }
 
 export class UserResolver extends SequelizeResolver {
@@ -154,10 +155,8 @@ export class User extends Model {
 
 /**
  *
- * @param options
- * @returns {string}
  */
-User.prototype.getSalutation = function(options = {}) {
+User.prototype.getSalutation = function(app, options = {}) {
 
   let salutation = 'User'
 
@@ -174,54 +173,55 @@ User.prototype.getSalutation = function(options = {}) {
 }
 /**
  *
- * @param val
- * @returns {Promise.<TResult>}
  */
-User.prototype.generateRecovery = function(val) {
-  return this.app.config.get('passport.bcrypt').hash(
+User.prototype.generateRecovery = function(app, val) {
+  return app.config.get('passport.bcrypt').hash(
     val,
-    this.app.config.get('assport.bcrypt').genSaltSync(10)
+    app.config.get('passport.bcrypt').genSaltSync(10)
   )
     .then(hash => {
       this.recovery = hash
       return this
     })
 }
+
 /**
  *
- * @param options
  */
-User.prototype.sendResetEmail = function(options: any = {}) {
-  return this.app.emails.User.recovery(this, {
-    send_email: this.app.config.get('passport.emails.userRecovery')
+User.prototype.sendResetEmail = function(app, options: any = {}) {
+  return app.emails.User.recovery(this, {
+    send_email: app.config.get('passport.emails.userRecovery')
   }, {
     transaction: options.transaction || null
   })
     .then(email => {
-      return this.app.services.NotificationService.create(
+      if (!app.services.NotificationService) {
+        app.log.debug('Spool-notifications is not installed, please install it to use NotificationService')
+        return
+      }
+      return app.services.NotificationService.create(
         email,
         [ this ],
         {transaction: options.transaction || null}
       )
         .then(notes => {
-          this.app.log.debug('NOTIFY', this.id, this.email, this.users.map(u => u.id), email.send_email, notes.users.map(u => u.id))
+          app.log.debug('NOTIFY', this.id, this.email, this.users.map(u => u.id), email.send_email, notes.users.map(u => u.id))
           return notes
         })
     })
     .catch(err => {
-      this.app.log.error(err)
+      app.log.error(err)
       return
     })
 }
 /**
- * Get's user's passports if not on DAO
- * @param options
+ * Get's user's passports if not on DAO instance
  */
-User.prototype.resolvePassports = function(options: any = {}) {
+User.prototype.resolvePassports = function(app, options: any = {}) {
 
   if (
     this.passports
-    && this.passports.every(t => t instanceof this.app.models.Passport.sequelizeModel)
+    && this.passports.every(t => t instanceof app.models.Passport.resolver.sequelizeModel)
     && options.reload !== true
   ) {
     return Promise.resolve(this)

@@ -1,6 +1,9 @@
 import * as bcryptjs from 'bcryptjs'
 
 export const passport = {
+  // Prefix the routes
+  prefix: null,
+
   redirect: {
     // Login successful
     login: '/',
@@ -9,6 +12,8 @@ export const passport = {
     // Recover successful
     recover: '/'
   },
+
+  // Algorithm to use
   bcrypt: bcryptjs,
 
   // onUserLogin: (req, app, user) => {
@@ -18,13 +23,16 @@ export const passport = {
   //   }
   //   return Promise.resolve(user)
   // },
+
   mergeThirdPartyProfile: (user, profile) => {
     return Promise.resolve(user)
   },
 
+  // Send Emails
   emails: {
     userRecovery: true
   },
 
+  // Allow Events
   events: {}
 }

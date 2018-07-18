@@ -18,7 +18,7 @@ const spools = [
   // require('@fabrix/spool-engine').EngineSpool,
   require('@fabrix/spool-email').EmailSpool,
   require('@fabrix/spool-sequelize').SequelizeSpool,
-  require('../dist').PassportSpool // spool-passport
+  require('../../dist/index').PassportSpool // spool-passport
 ]
 
 const App = {
@@ -59,6 +59,7 @@ const App = {
       profile: 'testProfile'
     },
     passport: {
+      // prefix: '/',
       redirect: {
         // Login successful
         login: '/',
@@ -148,18 +149,14 @@ const App = {
     },
     // Email
     email: { },
-    routes: [
-      {
-        path: '/',
-        method: ['GET'],
-        handler: 'DefaultController.info'
+    routes: {
+      '/': {
+        'GET': 'DefaultController.info'
       },
-      {
-        path: '/basic',
-        method: ['GET'],
-        handler: 'TestBasicController.info'
+      '/basic': {
+        'GET': 'TestBasicController.info'
       }
-    ],
+    },
     policies: {
       DefaultController: ['Passport.jwt'],
       TestBasicController: ['Passport.basicAuth'],

@@ -206,7 +206,7 @@ Now you can apply some policies to control sessions under `config/policies.ts`
 ```
 
 ### Routes prefix
-By default auth routes doesn't have prefix, but if you use `spool-tapestries` it automatically use tapestries prefix to match your API. You can change this prefix by setting `config.router.prefix`.
+By default auth routes do not have a prefix, you can change this prefix by setting `config.router.prefix` or by setting `config.passport.prefix`.
 
 ### Log/Register users with third party providers
 You can register or log users with third party strategies by redirect the user to : 
@@ -248,8 +248,8 @@ Just make a POST or GET request to `auth/logout`
 [twitter-image]: https://img.shields.io/twitter/follow/FabrixApp.svg?style=social
 [twitter-url]: https://twitter.com/FabrixApp
 
-[ci-sequelize-image]: https://img.shields.io/travis/fabrix-app/spool-sequelize/master.svg?style=flat-square
-[ci-sequelize-url]: https://travis-ci.org/fabrix-app/spool-sequelize
+[ci-sequelize-image]: https://img.shields.io/circleci/project/github/fabrix-app/spool-sequelize/master.svg
+[ci-sequelize-url]: https://circleci.com/gh/fabrix-app/spool-sequelize/tree/master
 
-[ci-express-image]: https://img.shields.io/travis/fabrix-app/spool-express/master.svg?style=flat-square
-[ci-express-url]: https://travis-ci.org/fabrix-app/spool-express
+[ci-express-image]: https://img.shields.io/circleci/project/github/fabrix-app/spool-express/master.svg
+[ci-express-url]: https://circleci.com/gh/fabrix-app/spool-express/tree/master
