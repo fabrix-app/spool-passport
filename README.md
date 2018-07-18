@@ -248,8 +248,8 @@ Just make a POST or GET request to `auth/logout`
 [twitter-image]: https://img.shields.io/twitter/follow/FabrixApp.svg?style=social
 [twitter-url]: https://twitter.com/FabrixApp
 
-[ci-sequelize-image]: https://img.shields.io/travis/fabrix-app/spool-sequelize/master.svg?style=flat-square
-[ci-sequelize-url]: https://travis-ci.org/fabrix-app/spool-sequelize
+[ci-sequelize-image]: https://img.shields.io/circleci/project/github/fabrix-app/spool-sequelize/master.svg
+[ci-sequelize-url]: https://circleci.com/gh/fabrix-app/spool-sequelize/tree/master
 
-[ci-express-image]: https://img.shields.io/travis/fabrix-app/spool-express/master.svg?style=flat-square
-[ci-express-url]: https://travis-ci.org/fabrix-app/spool-express
+[ci-express-image]: https://img.shields.io/circleci/project/github/fabrix-app/spool-express/master.svg
+[ci-express-url]: https://circleci.com/gh/fabrix-app/spool-express/tree/master
