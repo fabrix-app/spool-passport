@@ -15,7 +15,7 @@ export class User extends Email {
         }
         resUser = _user
 
-        const subject = data.subject || `Welcome ${ resUser.getSalutation() || 'User'}`
+        const subject = data.subject || `Welcome ${ resUser.getSalutation(this.app) || 'User'}`
         const sendEmail = typeof data.send_email !== 'undefined' ? data.send_email : true
 
         return this.compose('registered', subject, resUser, sendEmail)

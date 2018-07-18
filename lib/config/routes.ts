@@ -1,78 +1,60 @@
-export const routes = [
-  {
-    method: ['POST'],
-    path: '/auth/local',
-    handler: 'AuthController.callback',
+export const routes = {
+  '/auth/recover': {
+    'POST': 'AuthController.recover',
     config: {
-      app: {
-      }
+      prefix: 'passport.prefix',
     }
   },
-  {
-    method: ['POST'],
-    path: '/auth/local/{action}',
-    handler: 'AuthController.callback',
+  '/auth/logout': {
+    'GET': 'AuthController.logout',
+    'POST': 'AuthController.logout',
     config: {
-      app: {
-      }
+      prefix: 'passport.prefix',
+      app: {}
     }
   },
-  {
-    method: ['GET'],
-    path: '/auth/{provider}/callback',
-    handler: 'AuthController.callback',
+  '/auth/session': {
+    'GET': 'AuthController.session',
     config: {
-      app: {
-      }
-    }
-  }, {
-    method: ['GET'],
-    path: '/auth/{provider}/callback',
-    handler: 'AuthController.callback',
-    config: {
-      app: {
-      }
+      prefix: 'passport.prefix',
+      app: {}
     }
   },
-  {
-    method: ['GET'],
-    path: '/auth/{provider}/{action}',
-    handler: 'AuthController.callback',
+  '/auth/local': {
+    'POST': 'AuthController.callback',
     config: {
-      app: {
-      }
+      prefix: 'passport.prefix',
+      app: {}
     }
   },
-  {
-    method: ['POST'],
-    path: '/auth/recover',
-    handler: 'AuthController.recover'
-  },
-  {
-    method: ['GET', 'POST'],
-    path: '/auth/logout',
-    handler: 'AuthController.logout',
+  '/auth/local/{action}': {
+    'POST': 'AuthController.callback',
     config: {
-      app: {
-      }
+      prefix: 'passport.prefix',
+      app: {}
     }
   },
-  {
-    method: ['GET'],
-    path: '/auth/session',
-    handler: 'AuthController.session',
+  '/auth/{provider}/callback': {
+    'GET': 'AuthController.callback',
+    'POST': 'AuthController.callback',
     config: {
-      app: {
-      }
+      prefix: 'passport.prefix',
+      app: {}
     }
   },
-  {
-    method: ['GET'],
-    path: '/auth/{provider}',
-    handler: 'AuthController.provider',
+  '/auth/{provider}/{action}': {
+    'GET': 'AuthController.callback',
+    'POST': 'AuthController.callback',
     config: {
-      app: {
-      }
+      prefix: 'passport.prefix',
+      app: {}
+    }
+  },
+  '/auth/{provider}': {
+    'GET': 'AuthController.provider',
+    config: {
+      prefix: 'passport.prefix',
+      app: {}
     }
   }
-]
+}

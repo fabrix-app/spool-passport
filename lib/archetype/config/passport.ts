@@ -15,7 +15,7 @@ export const passport = {
   /**
    * Prefix for Auth routes
    */
-  // prefix: '/',
+  prefix: null,
   /**
    * Url redirection on login/logout
    */
@@ -108,10 +108,16 @@ export const passport = {
     }
     */
   },
-  // Emails that are allowed to send
+  /**
+   * Emails that are allowed to be sent by this spool through spool-email
+   */
   emails: {
     userRecovery: true
   },
-  // Events to allow "publish"
-  events: {}
+  /**
+   * Events that are allowed to be "published" through spool-engine
+   */
+  events: {
+
+  }
 }

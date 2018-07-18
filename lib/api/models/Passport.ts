@@ -1,3 +1,4 @@
+import { FabrixApp } from '@fabrix/fabrix'
 import { FabrixModel as Model } from '@fabrix/fabrix/dist/common'
 import { SequelizeResolver } from '@fabrix/spool-sequelize'
 
@@ -6,10 +7,10 @@ import { SequelizeResolver } from '@fabrix/spool-sequelize'
  * @description Passport model
  */
 export interface Passport {
-  generateHash(password: any): any
-  validateUser(password: any): any
-  validatePassword(password: any): any
-  resolveUser(options: any): any
+  generateHash(app: FabrixApp, password: any): any
+  validateUser(app: FabrixApp, password: any): any
+  validatePassword(app: FabrixApp, password: any): any
+  resolveUser(app: FabrixApp, options: any): any
 }
 export class Passport extends Model {
 
@@ -21,15 +22,13 @@ export class Passport extends Model {
           beforeCreate: (values, options) => {
             // return hashPassword(app.config.passport.bcrypt, values)
             // values.hashPassword(options)
-            return values.generateHash(values.password)
+            return values.generateHash(app, values.password)
               .catch(err => {
                 return Promise.reject(err)
               })
           },
           beforeUpdate: (values, options) => {
-            // return hashPassword(app.config.passport.bcrypt, values)
-            // values.hashPassword(options)
-            return values.generateHash(values.password)
+            return values.generateHash(app, values.password)
               .catch(err => {
                 return Promise.reject(err)
               })
@@ -102,16 +101,14 @@ export class Passport extends Model {
 
 /**
  *
- * @param password
- * @returns {Promise.<TResult>}
  */
-Passport.prototype.generateHash = function(password) {
+Passport.prototype.generateHash = function(app, password) {
   if (!password) {
     return Promise.resolve(this)
   }
-  return this.app.config.get('passport.bcrypt').hash(
+  return app.config.get('passport.bcrypt').hash(
     password,
-    this.app.config.get('passport.bcrypt').genSaltSync(10)
+    app.config.get('passport.bcrypt').genSaltSync(10)
   )
     .then(hash => {
       this.password = hash
@@ -120,21 +117,17 @@ Passport.prototype.generateHash = function(password) {
 }
 /**
  *
- * @param password
- * @returns {Promise}
  */
-Passport.prototype.validatePassword = function(password) {
-  return this.app.config.get('passport.bcrypt').compare(password, this.password)
+Passport.prototype.validatePassword = function(app, password) {
+  return app.config.get('passport.bcrypt').compare(password, this.password)
 }
 /**
  *
- * @param options
- * @returns {*}
  */
-Passport.prototype.resolveUser = function(options: {reload?: boolean, transaction?: any} = {}) {
+Passport.prototype.resolveUser = function(app, options: {reload?: boolean, transaction?: any} = {}) {
   if (
     this.User
-    && this.User instanceof this.app.models['User'].sequelizeModel
+    && this.User instanceof app.models['User'].resolver.sequelizeModel
     && options.reload !== true
   ) {
     return Promise.resolve(this)

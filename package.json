@@ -1,6 +1,6 @@
 {
   "name": "@fabrix/spool-passport",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Spool - To allow passport authentification for a Fabrix application",
   "homepage": "https://github.com/fabrix-app/spool-passport",
   "author": {
@@ -56,13 +56,13 @@
     "shortid": "^2.2.8"
   },
   "devDependencies": {
-    "@fabrix/fabrix": "^1.0.6",
+    "@fabrix/fabrix": "^1.1.0",
     "@fabrix/lint": "^1.0.0-alpha.3",
-    "@fabrix/spool-email": "^1.0.1",
-    "@fabrix/spool-express": "^1.0.0",
-    "@fabrix/spool-i18n": "^1.0.0",
-    "@fabrix/spool-router": "^1.0.0",
-    "@fabrix/spool-sequelize": "^1.0.2",
+    "@fabrix/spool-email": "^1.1.0",
+    "@fabrix/spool-express": "^1.1.1",
+    "@fabrix/spool-i18n": "^1.1.0",
+    "@fabrix/spool-router": "^1.1.1",
+    "@fabrix/spool-sequelize": "^1.1.0",
     "@types/lodash": "^4.14.109",
     "@types/node": "~10.3.4",
     "express": "4.15.2",
@@ -82,11 +82,11 @@
     "typescript": "~2.8.1"
   },
   "peerDependencies": {
-    "@fabrix/fabrix": "^1.0.6",
-    "@fabrix/spool-router": "^1.0.0",
-    "@fabrix/spool-i18n": "^1.0.0",
-    "@fabrix/spool-sequelize": "^1.0.2",
-    "@fabrix/spool-email": "^1.0.1"
+    "@fabrix/fabrix": "^1.1.0",
+    "@fabrix/spool-router": "^1.1.1",
+    "@fabrix/spool-i18n": "^1.1.0",
+    "@fabrix/spool-sequelize": "^1.1.0",
+    "@fabrix/spool-email": "^1.1.0"
   },
   "engines": {
     "node": ">= 7.6.0"

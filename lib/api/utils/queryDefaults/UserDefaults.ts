@@ -5,7 +5,7 @@ export const UserDefaults = {
     return {
       include: [
         {
-          model: app.models['Passport'],
+          model: app.models['Passport'].resolver.sequelizeModel,
           as: 'passports'
         }
       ]

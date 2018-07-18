@@ -1,7 +1,7 @@
 import * as joi from 'joi'
 
 export const passportsConfig = joi.object().keys({
-  prefix: joi.string(),
+  prefix: joi.string().allow('', null),
   redirect: joi.object().keys({
     logout: joi.string().required(),
     login: joi.string().required(),

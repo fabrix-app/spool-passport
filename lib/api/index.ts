@@ -12,10 +12,10 @@ export {
   controllers,
   // crons,
   emails,
-  events,
+  // events,
   // generics,
   models,
   policies,
   services,
-  // templates
+  templates
 }

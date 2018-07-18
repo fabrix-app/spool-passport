@@ -5,8 +5,14 @@ import { each, extend, clone } from 'lodash'
 export const Passport = {
   init: (app: FabrixApp) => {
     const passport = app.services.PassportService.passport
-    app.config.set('web.middlewares.passportInit', passport.initialize())
-    app.config.set('web.middlewares.passportSession', passport.session())
+    // app.config.set('web.middlewares.passportInit', passport.initialize())
+    // app.config.set('web.middlewares.passportSession', passport.session())
+
+    const webMiddlewares = app.config.get('web.middlewares')
+    app.config.set('web.middlewares', Object.assign(webMiddlewares, {
+      passportInit: passport.initialize(),
+      passportSession: passport.session()
+    }))
 
     /**
      * Connect a third-party profile to a local user
@@ -109,6 +115,7 @@ export const Passport = {
                 passport.tokens = JSON.stringify(query.tokens)
               }
 
+              // TODO This shouldn't use the Tapestry Service as it is too slow, should be Sequelize Resolver
               // Save any update to the Passport and read the associated user instance
               return Promise.all([
                 app.services.TapestryService.findAssociation('Passport', passport.id, 'User'),
@@ -201,20 +208,7 @@ export const Passport = {
 
         passport.use(new Strategy(options, app.services.PassportService.protocols[protocol](app)))
       }
-    }
-    )
-  },
-  addRoutes: (app: FabrixApp) => {
-    // const prefix = app.config.get('passport.prefix') || app.config.get('tapestries.prefix')
-    // const routerUtil = app.spools.router.util
-    // if (prefix) {
-    //   routes.forEach(route => {
-    //     route.path = prefix + route.path
-    //   })
-    // }
-    // app.config.routes = routerUtil.mergeRoutes(routes, app.config.get('routes'))
-
-    return Promise.resolve({})
+    })
   },
   /**
    * copyDefaults - Copies the default configuration so that it can be restored later
