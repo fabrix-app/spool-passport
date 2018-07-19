@@ -234,9 +234,9 @@ Just make a POST or GET request to `auth/logout`
 ## License
 [MIT](https://github.com/fabrix-app/spool-passport/blob/master/LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/spool-passport.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/spool-passport
-[npm-download]: https://img.shields.io/npm/dt/spool-passport.svg
+[npm-image]: https://img.shields.io/npm/v/@fabrix/spool-passport.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@fabrix/spool-passport
+[npm-download]: https://img.shields.io/npm/dt/@fabrix/spool-passport.svg
 [ci-image]: https://img.shields.io/circleci/project/github/fabrix-app/spool-passport/master.svg
 [ci-url]: https://circleci.com/gh/fabrix-app/spool-passport/tree/master
 [daviddm-image]: http://img.shields.io/david/fabrix-app/spool-passport.svg?style=flat-square
