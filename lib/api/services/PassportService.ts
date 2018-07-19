@@ -639,9 +639,7 @@ export class PassportService extends Service {
    * @param options
    * @returns {*}
    */
-  onRecovered(req, user, options) {
-    options = options || {}
-    // console.log('THIS RECOVER onRecover', user)
+  onRecovered(req, user, options = {}) {
     const onUserRecovered = this.app.config.get('passport.onUserRecovered')
 
     if (typeof onUserRecovered === 'object') {

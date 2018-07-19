@@ -144,7 +144,6 @@ export class AuthController extends Controller {
         if (!user) {
           // err.message === 'E_USER_NOT_FOUND'
         }
-        // console.log('THIS RECOVER',user)
         if (req.wantsJSON) {
           res.json({
             redirect: redirect,
