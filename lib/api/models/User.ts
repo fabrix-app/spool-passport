@@ -1,6 +1,7 @@
 import { FabrixApp } from '@fabrix/fabrix'
 import { FabrixModel as Model } from '@fabrix/fabrix/dist/common'
 import { SequelizeResolver } from '@fabrix/spool-sequelize'
+import { ModelError } from '@fabrix/spool-sequelize/dist/errors'
 
 import { UserDefaults } from '../utils/queryDefaults/UserDefaults'
 import * as shortId from 'shortid'
@@ -26,57 +27,135 @@ export class UserResolver extends SequelizeResolver {
     return this.findOne(options)
   }
 
-  resolve(user, options = {}) {
-    options = options || {}
-    if (user instanceof this.sequelizeModel) {
-      return Promise.resolve(user)
-    }
-    else if (user && isObject(user) && user.id) {
-      return this.findById(user.id, options)
-        .then(resUser => {
-          if (!resUser) {
-            throw Error(`User ${user.id} not found`)
-          }
-          return resUser
-        })
-    }
-    else if (user && isObject(user) && user.email) {
-      return this.findOne(defaultsDeep({
-        where: {
-          email: user.email
+  /**
+   * Resolve by instance Function
+   * @param user
+   * @param options
+   */
+  resolveByInstance (user, options: {[key: string]: any} = {}) {
+    return Promise.resolve(user)
+  }
+  /**
+   * Resolve by id Function
+   * @param user
+   * @param options
+   */
+  resolveById (user, options: {[key: string]: any} = {}) {
+    return this.findById(user.id, options)
+      .then(resUser => {
+        if (!resUser && options.reject !== false) {
+          throw new ModelError('E_NOT_FOUND', `User ${user.id} not found`)
         }
-      }, options))
-        .then(resUser => {
-          if (!resUser) {
-            throw new Error(`User ${user.email} not found`)
-          }
-          return resUser
-        })
-    }
-    else if (user && isNumber(user)) {
-      return this.findById(user, options)
-        .then(resUser => {
-          if (!resUser) {
-            throw new Error(`User ${user} not found`)
-          }
-          return resUser
-        })
-    }
-    else if (user && isString(user)) {
-      return this.findOne(defaultsDeep({
-        where: {
-          email: user
+        return resUser
+      })
+  }
+  /**
+   * Resolve by token Function
+   * @param user
+   * @param options
+   */
+  resolveByToken (user, options: {[key: string]: any} = {}) {
+    return this.findOne(defaultsDeep({
+      where: {
+        token: user.token
+      }
+    }, options))
+      .then(resUser => {
+        if (!resUser && options.reject !== false) {
+          throw new ModelError('E_NOT_FOUND', `User token ${user.token} not found`)
         }
-      }, options))
-        .then(resUser => {
-          if (!resUser) {
-            throw new Error(`User ${user} not found`)
-          }
-          return resUser
-        })
+        return resUser
+      })
+  }
+  /**
+   * Resolve by email Function
+   * @param user
+   * @param options
+   */
+  resolveByEmail (user, options: {[key: string]: any} = {}) {
+    return this.findOne(defaultsDeep({
+      where: {
+        email: user.email
+      }
+    }, options))
+      .then(resUser => {
+        if (!resUser && options.reject !== false) {
+          throw new ModelError('E_NOT_FOUND', `User email ${user.email} not found`)
+        }
+        return resUser
+      })
+  }
+  /**
+   * Resolve by number Function
+   * @param user
+   * @param options
+   */
+  resolveByNumber (user, options: {[key: string]: any} = {}) {
+    return this.findById(user, options)
+      .then(resUser => {
+        if (!resUser && options.reject !== false) {
+          throw new ModelError('E_NOT_FOUND', `User ${user.token} not found`)
+        }
+        return resUser
+      })
+  }
+  /**
+   * Resolve by string Function
+   * @param user
+   * @param options
+   */
+  resolveByString (user, options: {[key: string]: any} = {}) {
+    return this.findOne(defaultsDeep({
+      where: {
+        token: user
+      }
+    }, options))
+      .then(resUser => {
+        if (!resUser && options.reject !== false) {
+          throw new ModelError('E_NOT_FOUND', `User ${user} not found`)
+        }
+        return resUser
+      })
+  }
+  /**
+   * Primary Resolve Function
+   * @param user
+   * @param options
+   */
+  resolve(user, options: {[key: string]: any} = {}) {
+    const resolvers = {
+      'instance': user instanceof this.sequelizeModel,
+      'id': !!(user && isObject(user) && user.id),
+      'token': !!(user && isObject(user) && user.token),
+      'number': !!(user && isNumber(user)),
+      'string': !!(user && isString(user))
     }
-    else {
-      throw new Error(`User ${user} not found`)
+    const type = Object.keys(resolvers).find((key) => resolvers[key])
+
+    switch (type) {
+      case 'instance': {
+        return this.resolveByInstance(user, options)
+      }
+      case 'id': {
+        return this.resolveById(user, options)
+      }
+      case 'token': {
+        return this.resolveByToken(user, options)
+      }
+      case 'email': {
+        return this.resolveByEmail(user, options)
+      }
+      case 'number': {
+        return this.resolveByNumber(user, options)
+      }
+      case 'string': {
+        return this.resolveByString(user, options)
+      }
+      default: {
+        // TODO create proper error
+        const err = new Error(`Unable to resolve User ${user}`)
+        return Promise.reject(err)
+      }
     }
   }
 }
@@ -93,12 +172,14 @@ export class User extends Model {
       options: {
         underscored: true,
         hooks: {
-          beforeCreate: (values, options) => {
-            // If not token was already created, create it
-            if (!values.token) {
-              values.token = `user_${shortId.generate()}`
+          beforeCreate: [
+            (values, options) => {
+              // If not token was already created, create it
+              if (!values.token) {
+                values.token = `user_${shortId.generate()}`
+              }
             }
-          }
+          ]
         }
       }
     }

@@ -152,10 +152,9 @@ describe('PassportService', () => {
       })
       .expect(200)
       .end((err, res) => {
-        console.log('THIS RECOVER END', err, res.body)
+        // console.log('THIS RECOVER END', err, res.body)
         assert.equal(res.body.redirect, '/')
         assert.equal(res.body.user.username, 'jim')
-        assert.equal()
         done(err)
       })
   })

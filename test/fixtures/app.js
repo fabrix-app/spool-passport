@@ -81,7 +81,7 @@ const App = {
         return Promise.resolve(user)
       },
       onUserRecover: (req, app, user) => {
-        console.log('THIS RECOVER onUserRecover', user)
+        // console.log('THIS RECOVER onUserRecover', user)
         // if (user.recovery) {
         //   delete user.recovery
         // }
@@ -114,7 +114,7 @@ const App = {
             secretOrKey: SECRET,
             issuer: ISSUER,
             audience: AUDIENCE,
-            jwtFromRequest: ExtractJwt.fromAuthHeader() //Authorization: JWT JSON_WEB_TOKEN_STRING
+            jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt") //Authorization: JWT JSON_WEB_TOKEN_STRING
           }
         },
         local: {

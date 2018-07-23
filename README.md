@@ -117,7 +117,7 @@ export const passport = {
         secretOrKey: SECRET,
         issuer: ISSUER,
         audience: AUDIENCE,
-        jwtFromRequest: ExtractJwt.fromAuthHeader()
+        jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt")
       }
     },
 
