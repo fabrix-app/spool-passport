@@ -57,7 +57,7 @@ export class Passport extends Policy {
         return next()
       }
 
-      const authString = new Buffer(auth.split(' ')[1], 'base64').toString()
+      const authString = Buffer.from(auth.split(' ')[1], 'base64').toString()
       const username = authString.split(':')[0]
       const password = authString.split(':')[1]
       const test = this.app.services.PassportService.validateEmail(username)
