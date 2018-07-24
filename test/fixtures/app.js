@@ -158,8 +158,16 @@ const App = {
       }
     },
     policies: {
-      DefaultController: ['Passport.jwt'],
-      TestBasicController: ['Passport.basicAuth'],
+      DefaultController: {
+        '*': {
+          '*': ['Passport.jwt']
+        }
+      },
+      TestBasicController: {
+        '*': {
+          '*': ['Passport.basicAuth']
+        }
+      },
     },
     session: {
       secret: 'ok'
