@@ -210,7 +210,7 @@ export class PassportService extends Service {
             user: resUser.id
           }],
           type: 'user.registered',
-          message: `User ${resUser.getSalutation(this.app)} registered`,
+          message: `User ${resUser.getSalutation()} registered`,
           data: resUser
         }
         return this.publish(event.type, event, {
@@ -265,7 +265,7 @@ export class PassportService extends Service {
           throw new Error('E_USER_NOT_FOUND')
         }
         resUser = _user
-        return resUser.resolvePassports(this.app, {transaction: options.transaction || null})
+        return resUser.resolvePassports({transaction: options.transaction || null})
       })
       .then(() => {
         if (!resUser.passports || resUser.passports.length === 0) {
@@ -285,7 +285,7 @@ export class PassportService extends Service {
             passport: localPassport.id
           }],
           type: 'user.password.updated',
-          message: `User ${resUser.getSalutation(this.app)} password updated`,
+          message: `User ${resUser.getSalutation()} password updated`,
           data: resUser
         }
         return this.publish(event.type, event, {save: true})
@@ -405,7 +405,7 @@ export class PassportService extends Service {
         }
         reqUser = _user
 
-        return reqUser.resolvePassports(this.app)
+        return reqUser.resolvePassports()
       })
       .then(() => {
 
@@ -547,7 +547,7 @@ export class PassportService extends Service {
           throw new Error('E_USER_NOT_FOUND')
         }
         resUser = _user
-        return resUser.resolvePassports(this.app, {transaction: options.transaction || null})
+        return resUser.resolvePassports({transaction: options.transaction || null})
       })
       .then(() => {
         if (!resUser.passports || resUser.passports.length === 0) {
@@ -560,7 +560,7 @@ export class PassportService extends Service {
           throw new Error('E_NO_AVAILABLE_LOCAL_PASSPORT')
         }
 
-        return resUser.generateRecovery(this.app, body[fieldName].toLowerCase())
+        return resUser.generateRecovery(body[fieldName].toLowerCase())
           .catch(err => {
             throw new Error('E_VALIDATION_HASH')
           })
@@ -580,7 +580,7 @@ export class PassportService extends Service {
             passport: localPassport.id
           }],
           type: 'user.password.recover',
-          message: `User ${resUser.getSalutation(this.app)} requested to recover password`,
+          message: `User ${resUser.getSalutation()} requested to recover password`,
           data: resUser
         }
         return this.publish(event.type, event, {
@@ -703,7 +703,7 @@ export class PassportService extends Service {
             passport: passportInstance.id
           }],
           type: 'user.password.reset',
-          message: `User ${resUser.getSalutation(this.app)} password was reset`,
+          message: `User ${resUser.getSalutation()} password was reset`,
           data: passportInstance
         }
         return this.publish(event.type, event, {
@@ -766,7 +766,7 @@ export class PassportService extends Service {
             passport: passportInstance.id
           }],
           type: 'user.password.reset',
-          message: `User ${ resUser.getSalutation(this.app) } password was reset`,
+          message: `User ${ resUser.getSalutation() } password was reset`,
           data: passportInstance
         }
         return this.publish(event.type, event, {
