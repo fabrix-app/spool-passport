@@ -1,4 +1,3 @@
-import { FabrixApp } from '@fabrix/fabrix'
 import { FabrixModel as Model } from '@fabrix/fabrix/dist/common'
 import { SequelizeResolver } from '@fabrix/spool-sequelize'
 import { ModelError } from '@fabrix/spool-sequelize/dist/errors'
@@ -10,12 +9,12 @@ import { isObject, isNumber, isString, defaultsDeep } from 'lodash'
 
 export class UserResolver extends SequelizeResolver {
 
-  findByIdDefault(criteria, options = {}) {
+  findByIdDefault(criteria, options: {[key: string]: any} = {}) {
     options = defaultsDeep(options, UserDefaults.default(this.app))
     return this.findById(criteria, options)
   }
 
-  findOneDefault(options = {}) {
+  findOneDefault(options: {[key: string]: any} = {}) {
     options = defaultsDeep(options, UserDefaults.default(this.app))
     return this.findOne(options)
   }
@@ -79,6 +78,24 @@ export class UserResolver extends SequelizeResolver {
       })
   }
   /**
+   * Resolve by username Function
+   * @param user
+   * @param options
+   */
+  resolveByUsername (user, options: {[key: string]: any} = {}) {
+    return this.findOne(defaultsDeep({
+      where: {
+        username: user.username
+      }
+    }, options))
+      .then(resUser => {
+        if (!resUser && options.reject !== false) {
+          throw new ModelError('E_NOT_FOUND', `User username ${user.username} not found`)
+        }
+        return resUser
+      })
+  }
+  /**
    * Resolve by number Function
    * @param user
    * @param options
@@ -120,6 +137,9 @@ export class UserResolver extends SequelizeResolver {
       'instance': user instanceof this.sequelizeModel,
       'id': !!(user && isObject(user) && user.id),
       'token': !!(user && isObject(user) && user.token),
+      'email': !!(user && isObject(user) && user.email),
+      'username': !!(user && isObject(user) && user.username),
+      'create': !!(user && isObject(user) && options.create === true),
       'number': !!(user && isNumber(user)),
       'string': !!(user && isString(user))
     }
@@ -137,6 +157,12 @@ export class UserResolver extends SequelizeResolver {
       }
       case 'email': {
         return this.resolveByEmail(user, options)
+      }
+      case 'username': {
+        return this.resolveByUsername(user, options)
+      }
+      case 'create': {
+        return this.create(user, options)
       }
       case 'number': {
         return this.resolveByNumber(user, options)
@@ -159,17 +185,17 @@ export class UserResolver extends SequelizeResolver {
  */
 export class User extends Model {
 
-  static config(app, Sequelize) {
+  static config(app, Sequelize): {[key: string]: any} {
     return {
       // More information about supported models options here : http://docs.sequelizejs.com/en/latest/docs/models-definition/#configuration
       options: {
         underscored: true,
         hooks: {
           beforeCreate: [
-            (values, options) => {
+            (user, options) => {
               // If not token was already created, create it
-              if (!values.token) {
-                values.token = `user_${shortId.generate()}`
+              if (!user.token) {
+                user.token = `user_${shortId.generate()}`
               }
             }
           ]
@@ -178,7 +204,7 @@ export class User extends Model {
     }
   }
 
-  static schema(app, Sequelize) {
+  static schema(app, Sequelize): {[key: string]: any} {
     return {
       token: {
         type: Sequelize.STRING,
