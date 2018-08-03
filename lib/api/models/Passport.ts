@@ -14,7 +14,7 @@ export interface Passport {
 }
 export class Passport extends Model {
 
-  static config(app, Sequelize) {
+  static config(app, Sequelize): {[key: string]: any} {
     return {
       options: {
         underscored: true,
@@ -42,7 +42,7 @@ export class Passport extends Model {
     }
   }
 
-  static schema(app, Sequelize) {
+  static schema(app, Sequelize): {[key: string]: any} {
     return {
       user_id: {
         type: Sequelize.INTEGER
