@@ -114,7 +114,7 @@ const App = {
             secretOrKey: SECRET,
             issuer: ISSUER,
             audience: AUDIENCE,
-            jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt") //Authorization: JWT JSON_WEB_TOKEN_STRING
+            jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt") // Authorization: JWT JSON_WEB_TOKEN_STRING
           }
         },
         local: {
