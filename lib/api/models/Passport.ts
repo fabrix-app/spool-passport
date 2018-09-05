@@ -19,20 +19,24 @@ export class Passport extends Model {
       options: {
         underscored: true,
         hooks: {
-          beforeCreate: (values, options) => {
-            // return hashPassword(app.config.passport.bcrypt, values)
-            // values.hashPassword(options)
-            return values.generateHash(app, values.password)
-              .catch(err => {
-                return Promise.reject(err)
-              })
-          },
-          beforeUpdate: (values, options) => {
-            return values.generateHash(app, values.password)
-              .catch(err => {
-                return Promise.reject(err)
-              })
-          },
+          beforeCreate: [
+            (values, options) => {
+              // return hashPassword(app.config.passport.bcrypt, values)
+              // values.hashPassword(options)
+              return values.generateHash(app, values.password)
+                .catch(err => {
+                  return Promise.reject(err)
+                })
+            }
+          ],
+          beforeUpdate: [
+            (values, options) => {
+              return values.generateHash(app, values.password)
+                .catch(err => {
+                  return Promise.reject(err)
+                })
+            }
+          ],
           // beforeUpdate: (values, options) => {
           //   options.validate = false // skip re-validation of password hash
           //   values.hashPassword(options)

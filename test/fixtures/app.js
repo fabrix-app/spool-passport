@@ -15,7 +15,6 @@ const SECRET = 'mysupersecuretokentest'
 const spools = [
   require('@fabrix/spool-router').RouterSpool,
   require('@fabrix/spool-express').ExpressSpool,
-  // require('@fabrix/spool-engine').EngineSpool,
   require('@fabrix/spool-email').EmailSpool,
   require('@fabrix/spool-sequelize').SequelizeSpool,
   require('../../dist/index').PassportSpool // spool-passport
@@ -53,10 +52,6 @@ const App = {
     models: {
       defaultStore: 'sequelize',
       migrate: 'drop'
-    },
-    engine: {
-      live_mode: false,
-      profile: 'testProfile'
     },
     passport: {
       // prefix: '/',

@@ -22,10 +22,10 @@ export class PassportService extends Service {
   }
 
   publish(type, event, options: {save?: boolean, transaction?: any} = {}) {
-    if (this.app.services.EngineService) {
-      return this.app.services.EngineService.publish(type, event, options)
+    if (this.app.services.EventsService) {
+      return this.app.services.EventsService.publish(type, event, options)
     }
-    this.app.log.debug('Spool-engine is not installed, please install it to use publish')
+    this.app.log.debug('spool-events is not installed, please install it to use publish')
     return Promise.resolve()
   }
 
