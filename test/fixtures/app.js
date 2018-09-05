@@ -15,8 +15,8 @@ const SECRET = 'mysupersecuretokentest'
 const spools = [
   require('@fabrix/spool-router').RouterSpool,
   require('@fabrix/spool-express').ExpressSpool,
-  // require('@fabrix/spool-engine').EngineSpool,
   require('@fabrix/spool-email').EmailSpool,
+  require('@fabrix/spool-events').EventsSpool,
   require('@fabrix/spool-sequelize').SequelizeSpool,
   require('../../dist/index').PassportSpool // spool-passport
 ]
@@ -53,10 +53,6 @@ const App = {
     models: {
       defaultStore: 'sequelize',
       migrate: 'drop'
-    },
-    engine: {
-      live_mode: false,
-      profile: 'testProfile'
     },
     passport: {
       // prefix: '/',
@@ -114,7 +110,7 @@ const App = {
             secretOrKey: SECRET,
             issuer: ISSUER,
             audience: AUDIENCE,
-            jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt") //Authorization: JWT JSON_WEB_TOKEN_STRING
+            jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt") // Authorization: JWT JSON_WEB_TOKEN_STRING
           }
         },
         local: {

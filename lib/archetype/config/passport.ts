@@ -115,7 +115,7 @@ export const passport = {
     userRecovery: true
   },
   /**
-   * Events that are allowed to be "published" through spool-engine
+   * Events that are allowed to be "published" through spool-events
    */
   events: {
 
