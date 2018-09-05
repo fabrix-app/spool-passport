@@ -34,5 +34,11 @@ export const passport = {
   },
 
   // Allow Events
-  events: {}
+  events: {
+    'user.registered': true,
+    'user.password.updated': true,
+    'user.login': true,
+    'user.password.recover': true,
+    'user.password.reset': true
+  }
 }

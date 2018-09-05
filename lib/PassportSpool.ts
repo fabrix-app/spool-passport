@@ -1,4 +1,5 @@
 import { Spool } from '@fabrix/fabrix/dist/common'
+import { SanityError } from '@fabrix/fabrix/dist/errors'
 import { Validator } from './validator'
 import { Passport } from './passport'
 
@@ -26,8 +27,8 @@ export class PassportSpool extends Spool {
     if (!spools.some(v => requiredSpools.indexOf(v) >= 0)) {
       return Promise.reject(new Error(`spool-passport requires spools: ${ requiredSpools.join(', ') }!`))
     }
-    if (!spools.some(v => v === 'engine')) {
-      this.app.log.warn('spool-engine not installed, pubSub is disabled')
+    if (!spools.some(v => v === 'events')) {
+      this.app.log.warn('spool-events not installed, pubSub is disabled')
     }
     if (!spools.some(v => v === 'notifications')) {
       this.app.log.warn('spool-notifications not installed, notifications are disabled')
@@ -56,15 +57,19 @@ export class PassportSpool extends Spool {
     return Promise.all([
       Validator.validatePassportsConfig(this.app.config.get('passport'))
     ])
+      .catch(err => {
+        return Promise.reject(err)
+      })
   }
 
   /**
    * Initialise passport functions and load strategies
    */
-  configure() {
+  async configure() {
     Passport.init(this.app)
     Passport.loadStrategies(this.app)
     Passport.copyDefaults(this.app)
+    return Promise.resolve()
   }
 
   sanity() {
@@ -73,14 +78,14 @@ export class PassportSpool extends Spool {
       || !this.app.config.get('web.middlewares').passportInit
       || !this.app.config.get('web').middlewares.passportInit
     ) {
-      throw new Error('passportInit middleware missing in web.middlewares!')
+      throw new SanityError('passportInit middleware missing in web.middlewares!')
     }
     if (
       !this.app.config.get('web.middlewares.passportSession')
       || !this.app.config.get('web.middlewares').passportSession
       || !this.app.config.get('web').middlewares.passportSession
     ) {
-      throw new Error('passportSession middleware missing in web.middlewares!')
+      throw new SanityError('passportSession middleware missing in web.middlewares!')
     }
   }
 

@@ -16,6 +16,7 @@ const spools = [
   require('@fabrix/spool-router').RouterSpool,
   require('@fabrix/spool-express').ExpressSpool,
   require('@fabrix/spool-email').EmailSpool,
+  require('@fabrix/spool-events').EventsSpool,
   require('@fabrix/spool-sequelize').SequelizeSpool,
   require('../../dist/index').PassportSpool // spool-passport
 ]
