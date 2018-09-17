@@ -1,6 +1,6 @@
 {
   "name": "@fabrix/spool-passport",
-  "version": "1.1.7",
+  "version": "1.5.0",
   "description": "Spool - To allow passport authentification for a Fabrix application",
   "homepage": "https://github.com/fabrix-app/spool-passport",
   "author": {
@@ -49,32 +49,32 @@
   ],
   "dependencies": {
     "bcryptjs": "2.4.3",
-    "joi": "^13.4.0",
+    "joi": "^13.6.0",
     "jsonwebtoken": "8.3.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "passport": "^0.4.0",
-    "shortid": "^2.2.12"
+    "shortid": "^2.2.13"
   },
   "devDependencies": {
-    "@fabrix/fabrix": "^1.1.4",
+    "@fabrix/fabrix": "^1.5.3",
     "@fabrix/lint": "^1.0.0-alpha.3",
-    "@fabrix/spool-email": "^1.1.0",
-    "@fabrix/spool-events": "^1.1.0",
-    "@fabrix/spool-express": "^1.1.5",
-    "@fabrix/spool-i18n": "^1.1.0",
-    "@fabrix/spool-router": "^1.1.4",
-    "@fabrix/spool-sequelize": "^1.1.11",
+    "@fabrix/spool-email": "^1.5.0",
+    "@fabrix/spool-events": "^1.5.0",
+    "@fabrix/spool-express": "^1.5.0",
+    "@fabrix/spool-i18n": "^1.5.0",
+    "@fabrix/spool-router": "^1.5.0",
+    "@fabrix/spool-sequelize": "^1.5.0",
     "@types/lodash": "^4.14.109",
     "@types/node": "~10.3.4",
-    "express": "4.15.2",
+    "express": "4.16.3",
     "mocha": "^5",
-    "nyc": "^12.0.2",
+    "nyc": "^13.0.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pg": "^6.4.2",
     "sails-disk": "^0.10.10",
-    "smokesignals": "^2.0.0",
-    "supertest": "3.0.0",
+    "smokesignals": "^3.0.4",
+    "supertest": "3.3.0",
     "tslib": "~1.9.0",
     "tslint": "~5.10.0",
     "tslint-microsoft-contrib": "~5.0.3",
@@ -82,12 +82,12 @@
     "typescript": "~2.8.1"
   },
   "peerDependencies": {
-    "@fabrix/fabrix": "^1.1.4",
-    "@fabrix/spool-express": "^1.1.5",
-    "@fabrix/spool-router": "^1.1.4",
-    "@fabrix/spool-i18n": "^1.1.0",
-    "@fabrix/spool-sequelize": "^1.1.11",
-    "@fabrix/spool-email": "^1.1.0"
+    "@fabrix/fabrix": "^1.5.3",
+    "@fabrix/spool-express": "^1.5.0",
+    "@fabrix/spool-router": "^1.5.0",
+    "@fabrix/spool-i18n": "^1.5.0",
+    "@fabrix/spool-sequelize": "^1.5.0",
+    "@fabrix/spool-email": "^1.5.0"
   },
   "engines": {
     "node": ">= 7.6.0"
