@@ -476,7 +476,7 @@ export class PassportService extends Service {
    * @returns {*}
    */
   logout(req, user) {
-    const onUserLogout = this.app.config.get('config.passport.onUserLogout')
+    const onUserLogout = this.app.config.get('passport.onUserLogout')
 
     if (onUserLogout instanceof Object && typeof onUserLogout !== 'function') {
       const promises = []
